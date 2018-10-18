@@ -22,6 +22,6 @@ func NewProvisioner() controller.Provisioner {
 
 func (p *hetznerProvisioner) getClient(token string) *hcloud.Client {
 	client := hcloud.NewClient(hcloud.WithToken(token))
-    return client
+	return client
 }
 
