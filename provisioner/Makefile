@@ -1,7 +1,7 @@
 IMAGE = spangenberg/xenserver-provisioner:latest
 
 all build:
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/xenserver-provisioner
+	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/provisioner
 .PHONY: all build
 
 container: build quick-container
@@ -16,5 +16,5 @@ push: container
 .PHONY: push
 
 clean:
-	rm -f bin/xenserver-provisioner
+	rm -f bin/provisioner
 .PHONY: clean

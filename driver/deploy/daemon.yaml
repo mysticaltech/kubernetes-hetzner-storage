@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: xenserver-driver
+  name: hetzner-driver
 spec:
   template:
     metadata:
       labels:
-        app: xenserver-driver
+        app: hetzner-driver
     spec:
       containers:
-        - image: spangenberg/xenserver-driver:0.2
-          name: xenserver-driver
+        - image: stevenklar/hetzner-volume-driver:0.1
+          name: hetzner-driver
           securityContext:
             privileged: true
           volumeMounts:

@@ -1,7 +1,7 @@
-IMAGE = spangenberg/xenserver-driver:latest
+IMAGE = stevenklar/hetzner-volume-driver:0.1
 
 all build:
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/xenserver
+	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/driver
 .PHONY: all build
 
 container: build quick-container
@@ -16,5 +16,5 @@ push: container
 .PHONY: push
 
 clean:
-	rm -f bin/xenserver
+	rm -f bin/driver
 .PHONY: clean
