@@ -3,4 +3,4 @@ kind: StorageClass
 metadata:
   name: hetzner-cloud-default
 parameters:
-provisioner: stevenklar/hetzner-provisioner
+provisioner: stevenklar/hetzner-storage-provisioner

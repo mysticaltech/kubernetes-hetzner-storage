@@ -12,14 +12,14 @@ const (
 )
 
 type jsonParameter struct {
-	FSGroup           string `json:"kubernetes.io/fsGroup"`
-	FSType            string `json:"kubernetes.io/fsType"`
-	PVOrVolumeName    string `json:"kubernetes.io/pvOrVolumeName"`
-	PodName           string `json:"kubernetes.io/pod.name"`
-	PodNamespace      string `json:"kubernetes.io/pod.namespace"`
-	PodUID            string `json:"kubernetes.io/pod.uid"`
-	ReadWrite         string `json:"kubernetes.io/readwrite"`
-	ServiceAccount    string `json:"kubernetes.io/serviceAccount.name"`
+	FSGroup		   string `json:"kubernetes.io/fsGroup"`
+	FSType			string `json:"kubernetes.io/fsType"`
+	PVOrVolumeName	string `json:"kubernetes.io/pvOrVolumeName"`
+	PodName		   string `json:"kubernetes.io/pod.name"`
+	PodNamespace	  string `json:"kubernetes.io/pod.namespace"`
+	PodUID			string `json:"kubernetes.io/pod.uid"`
+	ReadWrite		 string `json:"kubernetes.io/readwrite"`
+	ServiceAccount	string `json:"kubernetes.io/serviceAccount.name"`
 }
 
 func main() {
@@ -80,12 +80,12 @@ func failure(err error) {
 }
 
 func mount(mountDir, jsonOptions string) {
-    // TODO: To be implemented
+	// TODO: To be implemented
 	success()
 }
 
 func unmount(mountDir string) {
-    // TODO: To be implemented
+	// TODO: To be implemented
 	success()
 }
 
@@ -97,4 +97,3 @@ func run(cmd string, args ...string) (string, error) {
 	}
 	return string(out), nil
 }
-

@@ -1,4 +1,4 @@
-IMAGE = spangenberg/xenserver-provisioner:latest
+IMAGE = stevenklar/hetzner-storage-provisioner:latest
 
 all build:
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/provisioner

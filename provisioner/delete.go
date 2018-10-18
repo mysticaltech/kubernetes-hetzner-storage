@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
 )
@@ -8,8 +9,17 @@ import (
 func (p *hetznerProvisioner) Delete(volume *v1.PersistentVolume) error {
 	glog.Infof("Delete called for volume: %s", volume.Name)
 
-    // TODO: Delete from hetzner
+	client := p.getClient(p.token)
+	hetznerVolume, _, err := client.Volume.GetByName(context.Background(), volume.Name)
 
-	return nil
+	if err != nil {
+		glog.Infof("Delete failed for volume: %s", volume.Name)
+		return err
+	}
+
+	response, err := client.Volume.Delete(context.Background(), hetznerVolume)
+	glog.Infoln(response)
+
+	return err
 }
 
