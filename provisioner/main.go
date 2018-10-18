@@ -12,11 +12,8 @@ import (
 )
 
 const (
-	driver                        = "spangenberg.io/xenserver"
-	driverOptionXenServerHost     = "spangenberg.io/xenserver/host"
-	driverOptionXenServerPassword = "spangenberg.io/xenserver/password"
-	driverOptionXenServerUsername = "spangenberg.io/xenserver/username"
-	storageClassParameterSRName   = "spangenberg.io/xenserver/srName"
+	driver                        = "stevenklar/hetzner-cloud-driver"
+	driverOptionToken             = "stevenklar/hetzner-cloud-driver/token"
 )
 
 var (
@@ -52,12 +49,12 @@ func main() {
 		glog.Fatalf("Error getting server version: %v", err)
 	}
 
-	xenServerProvisioner := NewXenServerProvisioner()
+	hetznerProvisioner := NewProvisioner()
 
 	pc := controller.NewProvisionController(
 		clientset,
 		*provisioner,
-		xenServerProvisioner,
+		hetznerProvisioner,
 		serverVersion.GitVersion,
 	)
 

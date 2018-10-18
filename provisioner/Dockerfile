@@ -1,3 +1,3 @@
 FROM alpine:3.7
-COPY bin/xenserver-provisioner /usr/local/bin/xenserver-provisioner
-ENTRYPOINT ["/usr/local/bin/xenserver-provisioner"]
+COPY bin/provisioner /usr/local/bin/provisioner
+ENTRYPOINT ["/usr/local/bin/provisioner"]
