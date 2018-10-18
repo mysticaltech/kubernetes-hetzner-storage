@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/kubernetes-incubator/external-storage/lib/controller"

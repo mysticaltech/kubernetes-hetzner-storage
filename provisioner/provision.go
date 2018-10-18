@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/golang/glog"
 	"github.com/kubernetes-incubator/external-storage/lib/controller"
 	"k8s.io/api/core/v1"
@@ -11,7 +9,7 @@ import (
 
 const defaultFSType = "ext4"
 
-func (p *xenServerProvisioner) Provision(options controller.VolumeOptions) (*v1.PersistentVolume, error) {
+func (p *hetznerProvisioner) Provision(options controller.VolumeOptions) (*v1.PersistentVolume, error) {
 	glog.Infof("Provision called for volume: %s", options.PVName)
 
     // TODO: Provision on Hetzner Cloud
@@ -27,7 +25,7 @@ func (p *xenServerProvisioner) Provision(options controller.VolumeOptions) (*v1.
 			},
 			PersistentVolumeReclaimPolicy: options.PersistentVolumeReclaimPolicy,
 			PersistentVolumeSource: v1.PersistentVolumeSource{
-				FlexVolume: &v1.FlexVolumeSource{
+				FlexVolume: &v1.FlexPersistentVolumeSource{
 					Driver: driver,
 					FSType: defaultFSType,
 					Options: map[string]string{

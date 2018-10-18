@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xenserver-provisioner
+  name: hetzner-provisioner
 spec:
   replicas: 1
   strategy:
@@ -9,24 +9,14 @@ spec:
   template:
     metadata:
       labels:
-        app: xenserver-provisioner
+        app: hetzner-provisioner
     spec:
       containers:
-        - env:
-            - name: XENSERVER_HOST
-              valueFrom:
-                configMapKeyRef:
-                  key: host
-                  name: xenserver
-            - name: XENSERVER_USERNAME
+        - name: provisioner
+          image: stevenklar/hetzner-provisioner:0.1
+          env:
+            - name: HETZNER_TOKEN
               valueFrom:
                 secretKeyRef:
-                  key: username
-                  name: xenserver
-            - name: XENSERVER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: xenserver
-          image: spangenberg/xenserver-provisioner:0.2
-          name: xenserver-provisioner
+                  key: token
+                  name: hetzner-cloud

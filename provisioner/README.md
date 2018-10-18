@@ -11,8 +11,8 @@ Credentials will be passed on every node and persisted to disk for every volume.
 Future releases will fix this issue.
 
 ```console
-$ kubectl create secret generic hetzner-token \
---from-literal=api=s0m3l33tt0k3n
+$ kubectl create secret generic hetzner-cloud \
+--from-literal=token=s0m3l33tt0k3n
 ```
 
 ```console

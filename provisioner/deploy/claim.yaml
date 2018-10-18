@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: hetzner-cloud-pvc
   annotations:
-    volume.beta.kubernetes.io/storage-class: xenserver-default
-  name: xenserver
+    volume.beta.kubernetes.io/storage-class: hetzner-cloud-default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Mi
+      storage: 10Gi
