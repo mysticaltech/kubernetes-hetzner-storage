@@ -1,4 +1,4 @@
-IMAGE = stevenklar/hetzner-volume-driver:0.1
+IMAGE = stevenklar/hetzner-cloud-driver:latest
 
 all build:
 	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/driver

@@ -3,12 +3,12 @@
 set -o errexit
 set -o pipefail
 
-#if [ ! -d /kubelet-plugins/spangenberg.io~xenserver ]; then
-#  mkdir /kubelet-plugins/spangenberg.io~xenserver
-#fi
-#
-#cp /usr/local/bin/xenserver /kubelet-plugins/spangenberg.io~xenserver/.tmp_xenserver
-#mv -f /kubelet-plugins/spangenberg.io~xenserver/.tmp_xenserver /kubelet-plugins/spangenberg.io~xenserver/xenserver
+if [ ! -d /kubelet-plugins/hetzner-cloud-storage ]; then
+  mkdir /kubelet-plugins/hetzner-cloud-storage
+fi
+
+cp /usr/local/bin/driver /kubelet-plugins/hetzner-cloud-storage/.tmp_driver
+mv -f /kubelet-plugins/hetzner-cloud-storage/.tmp_driver /kubelet-plugins/hetzner-cloud-storage/driver
 
 while : ; do
   sleep 3600

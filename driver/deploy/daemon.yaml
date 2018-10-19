@@ -9,7 +9,7 @@ spec:
         app: hetzner-driver
     spec:
       containers:
-        - image: stevenklar/hetzner-cloud-driver:0.1
+        - image: stevenklar/hetzner-cloud-driver:latest
           name: hetzner-driver
           securityContext:
             privileged: true
