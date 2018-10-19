@@ -24,10 +24,12 @@ var (
 
 func main() {
 	flag.Parse()
-	flag.Set("logtostderr", "true")
+	err := flag.Set("logtostderr", "true")
+	if err != nil {
+		glog.Fatalf("Failed to set flag: %v", err)
+	}
 
 	var config *rest.Config
-	var err error
 	if *master != "" || *kubeconfig != "" {
 		glog.Infof("Either master or kubeconfig specified. Building kube config from that...")
 		config, err = clientcmd.BuildConfigFromFlags(*master, *kubeconfig)
@@ -35,6 +37,7 @@ func main() {
 		glog.Infof("Building kube configs for running in cluster...")
 		config, err = rest.InClusterConfig()
 	}
+
 	if err != nil {
 		glog.Fatalf("Failed to create config: %v", err)
 	}
