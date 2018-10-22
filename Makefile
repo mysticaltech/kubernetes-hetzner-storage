@@ -1,19 +1,19 @@
 all build:
-	make -C driver
-	make -C provisioner
+	make -C pkg/driver
+	make -C pkg/provisioner
 .PHONY: all build
 
 container:
-	make -C driver container
-	make -C provisioner container
+	make -C pkg/driver container
+	make -C pkg/provisioner container
 .PHONY: container
 
 push:
-	make -C driver push
-	make -C provisioner push
+	make -C pkg/driver push
+	make -C pkg/provisioner push
 .PHONY: push
 
 clean:
-	make -C driver clean
-	make -C provisioner clean
+	make -C pkg/driver clean
+	make -C pkg/provisioner clean
 .PHONY: clean
