@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/kubernetes-incubator/external-storage/lib/controller"
-	c "github.com/stevenklar/kubernetes-hetzner-storage/pkg/common"
+	h "github.com/stevenklar/kubernetes-hetzner-storage/pkg/hetzner"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -48,7 +48,7 @@ func (p *hetznerProvisioner) Provision(options controller.VolumeOptions) (*v1.Pe
 }
 
 func (p *hetznerProvisioner) provisionOnHetznerCloud(options controller.VolumeOptions) error {
-	client := c.GetClient(p.token)
+	client := h.GetClient(p.token)
 
 	capacity, exists := options.PVC.Spec.Resources.Requests[v1.ResourceStorage]
 	if !exists {

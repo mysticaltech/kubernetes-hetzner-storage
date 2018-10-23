@@ -1,16 +1,18 @@
 package driver
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	c "github.com/stevenklar/kubernetes-hetzner-storage/pkg/common"
+	h "github.com/stevenklar/kubernetes-hetzner-storage/pkg/hetzner"
 )
 
-// JsonParameter contains import kubernetes details about pod and volume
-type JsonParameter struct {
+// JSONParameter contains import kubernetes details about pod and volume
+type JSONParameter struct {
 	FSGroup        string `json:"kubernetes.io/fsGroup"`
 	FSType         string `json:"kubernetes.io/fsType"`
 	PVOrVolumeName string `json:"kubernetes.io/pvOrVolumeName"`
@@ -24,7 +26,7 @@ type JsonParameter struct {
 
 // Driver contains options and client information
 type Driver struct {
-	options JsonParameter
+	options JSONParameter
 	client  *hcloud.Client
 }
 
@@ -42,7 +44,7 @@ func Run() {
 		jsonOptions = os.Args[3]
 	}
 
-	c.Debug(fmt.Sprintf("%s %s %s", command, mountDir, jsonOptions))
+	Debug(fmt.Sprintf("%s %s %s", command, mountDir, jsonOptions))
 
 	switch command {
 	case "init":
@@ -66,13 +68,62 @@ func initialize() {
 
 func newDriver(jsonOptions string) *Driver {
 	byt := []byte(jsonOptions)
-	options := JsonParameter{}
+	options := JSONParameter{}
 	if err := json.Unmarshal(byt, &options); err != nil {
-		c.Failure(err)
+		Failure(err)
 	}
 
-	client := c.GetClient(options.Token)
+	client := h.GetClient(options.Token)
 	driver := Driver{options: options, client: client}
 
 	return &driver
+}
+
+// GetVolume wraps the hetzner volume finder by name
+func GetVolume(client *hcloud.Client, name string) *hcloud.Volume {
+	volume, _, _ := client.Volume.GetByName(context.Background(), name)
+
+	return volume
+}
+
+// GetServer retreive the server information equals the host machine with application run on
+func GetServer(client *hcloud.Client) *hcloud.Server {
+	// get all hetzner nodes
+	servers, err := client.Server.All(context.Background())
+
+	if err != nil {
+		Failure(err)
+	}
+
+	// get all interface ips
+	ifaces, err := net.Interfaces()
+	// handle err
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			return nil
+		}
+		// handle err
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+
+			if ip == nil {
+				continue
+			}
+
+			for _, server := range servers {
+				if server.PublicNet.IPv4.IP.String() == ip.String() {
+					return server
+				}
+			}
+		}
+	}
+
+	return nil
 }
