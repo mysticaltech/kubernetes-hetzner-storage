@@ -54,7 +54,6 @@ func Run() {
 	}
 
 	hetznerProvisioner := NewProvisioner()
-
 	pc := controller.NewProvisionController(
 		clientset,
 		*provisioner,

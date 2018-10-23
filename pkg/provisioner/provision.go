@@ -17,7 +17,7 @@ const defaultFSType = "ext4"
 func (p *hetznerProvisioner) Provision(options controller.VolumeOptions) (*v1.PersistentVolume, error) {
 	glog.Infof("Provision called for volume: %s", options.PVName)
 
-	if err := p.provisionOnHetznerCloud(options); err != nil {
+	if err := p.createVolume(options); err != nil {
 		glog.Errorf("Failed to provision volume %s, error: %s", options, err.Error())
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (p *hetznerProvisioner) Provision(options controller.VolumeOptions) (*v1.Pe
 	return pv, nil
 }
 
-func (p *hetznerProvisioner) provisionOnHetznerCloud(options controller.VolumeOptions) error {
+func (p *hetznerProvisioner) createVolume(options controller.VolumeOptions) error {
 	client := h.GetClient(p.token)
 
 	capacity, exists := options.PVC.Spec.Resources.Requests[v1.ResourceStorage]
