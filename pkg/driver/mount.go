@@ -11,6 +11,8 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
+const defaultFSType = "ext4"
+
 // Mount initiate the host mount
 func (d *Driver) Mount(mountDir string) {
 	// TODO: check if volume was created
@@ -41,7 +43,7 @@ func mountAttachedVolume(volume *hcloud.Volume, mountDir string) error {
 
 	// if device is not formatted, format it
 	if blkid == "" {
-		if _, err := RunCommand("mkfs", "-t", "ext4", volume.LinuxDevice); err != nil {
+		if _, err := RunCommand("mkfs", "-t", defaultFSType, volume.LinuxDevice); err != nil {
 			Failure(err)
 		}
 	}
@@ -57,7 +59,7 @@ func mountAttachedVolume(volume *hcloud.Volume, mountDir string) error {
 	}
 
 	Debug("syscall.Mount")
-	if err := syscall.Mount(volume.LinuxDevice, mountDir, "ext4", 0, ""); err != nil {
+	if err := syscall.Mount(volume.LinuxDevice, mountDir, defaultFSType, 0, ""); err != nil {
 		Failure(err)
 	}
 
