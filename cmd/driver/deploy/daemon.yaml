@@ -18,5 +18,5 @@ spec:
               name: kubelet-plugins
       volumes:
         - hostPath:
-            path: /var/lib/kubelet/volumeplugins/volume/exec/
+            path: /var/lib/kubelet/volumeplugins/
           name: kubelet-plugins
