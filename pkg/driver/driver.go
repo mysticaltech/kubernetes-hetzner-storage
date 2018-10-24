@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
 
@@ -21,12 +22,13 @@ type JSONParameter struct {
 	PodUID         string `json:"kubernetes.io/pod.uid"`
 	ReadWrite      string `json:"kubernetes.io/readwrite"`
 	ServiceAccount string `json:"kubernetes.io/serviceAccount.name"`
-	Token          string ``
+	Token          string `json:"stevenklar/hetzner-cloud-driver/token"`
 }
 
 // Driver contains options and client information
 type Driver struct {
 	options JSONParameter
+	rawOptions string
 	client  *hcloud.Client
 }
 
@@ -53,7 +55,13 @@ func Run() {
 		driver := newDriver(jsonOptions)
 		driver.Mount(mountDir)
 	case "unmount":
-		driver := newDriver(jsonOptions)
+		jsonOptionsFile := fmt.Sprintf("%s.json", mountDir)
+		byt, err := ioutil.ReadFile(jsonOptionsFile)
+		if err != nil {
+			Failure(err)
+		}
+
+		driver := newDriver(string(byt))
 		driver.Unmount(mountDir)
 	default:
 		fmt.Print("{\"status\": \"Not supported\"}")
@@ -74,7 +82,7 @@ func newDriver(jsonOptions string) *Driver {
 	}
 
 	client := h.GetClient(options.Token)
-	driver := Driver{options: options, client: client}
+	driver := Driver{options: options, rawOptions: jsonOptions, client: client}
 
 	return &driver
 }

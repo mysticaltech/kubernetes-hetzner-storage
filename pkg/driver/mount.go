@@ -19,23 +19,30 @@ func (d *Driver) Mount(mountDir string) {
 	// TODO: Detach if volume is attached (!! Maybe it's not necessary to detach before attaching?!)
 	volume := GetVolume(d.client, d.options.PVOrVolumeName)
 	server := GetServer(d.client)
-	_, _, err := d.client.Volume.Attach(context.Background(), volume, server)
+	_, _, errDetach := d.client.Volume.Detach(context.Background(), volume)
 
-	if err != nil {
-		Failure(err)
+	if errDetach != nil {
+		Debug("Volume was not attached to a server")
+	}
+
+	_, _, errAttach := d.client.Volume.Attach(context.Background(), volume, server)
+
+	if errAttach != nil {
+		Debug(errAttach.Error())
 	}
 
 	// TODO: Retrieve attached volume information
-	mountAttachedVolume(volume, mountDir)
+	err := d.mountAttachedVolume(volume, mountDir)
 
 	if err != nil {
+		Debug(err.Error())
 		Failure(err)
 	}
 
 	Success()
 }
 
-func mountAttachedVolume(volume *hcloud.Volume, mountDir string) error {
+func (d Driver) mountAttachedVolume(volume *hcloud.Volume, mountDir string) error {
 	blkid, err := RunCommand("blkid", volume.LinuxDevice)
 	if err != nil && !strings.Contains(err.Error(), "exit status 2") {
 		Failure(err)
@@ -49,7 +56,8 @@ func mountAttachedVolume(volume *hcloud.Volume, mountDir string) error {
 	}
 
 	Debug("ioutil.WriteFile")
-	if err := ioutil.WriteFile(fmt.Sprintf("%s.json", mountDir), nil, 0600); err != nil {
+	jsonData := []byte(d.rawOptions)
+	if err := ioutil.WriteFile(fmt.Sprintf("%s.json", mountDir), jsonData, 0600); err != nil {
 		Failure(err)
 	}
 
