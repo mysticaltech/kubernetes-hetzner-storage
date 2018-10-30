@@ -47,3 +47,14 @@ func RunCommand(cmd string, args ...string) (string, error) {
 	}
 	return string(out), nil
 }
+
+func NotSupported() {
+	fmt.Print("{\"status\": \"Not supported\"}")
+	os.Exit(1)
+}
+
+func Initialize() {
+	fmt.Print("{\"status\": \"Success\", \"capabilities\": {\"attach\": false}}")
+	os.Exit(0)
+}
+

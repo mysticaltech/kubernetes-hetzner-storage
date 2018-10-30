@@ -27,9 +27,9 @@ type JSONParameter struct {
 
 // Driver contains options and client information
 type Driver struct {
-	options JSONParameter
+	options    JSONParameter
 	rawOptions string
-	client  *hcloud.Client
+	client     *hcloud.Client
 }
 
 // Run executes the driver routine
@@ -44,34 +44,36 @@ func Run() {
 	}
 	if len(os.Args) > 3 {
 		jsonOptions = os.Args[3]
+	} else {
+		jsonOptions = getJsonOptionsByFile(mountDir, jsonOptions)
 	}
 
 	Debug(fmt.Sprintf("%s %s %s", command, mountDir, jsonOptions))
 
 	switch command {
 	case "init":
-		initialize()
+		Initialize()
 	case "mount":
 		driver := newDriver(jsonOptions)
 		driver.Mount(mountDir)
 	case "unmount":
-		jsonOptionsFile := fmt.Sprintf("%s.json", mountDir)
-		byt, err := ioutil.ReadFile(jsonOptionsFile)
-		if err != nil {
-			Failure(err)
-		}
-
-		driver := newDriver(string(byt))
+		driver := newDriver(jsonOptions)
 		driver.Unmount(mountDir)
 	default:
-		fmt.Print("{\"status\": \"Not supported\"}")
-		os.Exit(1)
+		NotSupported()
 	}
 }
 
-func initialize() {
-	fmt.Print("{\"status\": \"Success\", \"capabilities\": {\"attach\": false}}")
-	os.Exit(0)
+func getJsonOptionsByFile(mountDir string, jsonOptions string) string {
+	jsonOptionsFile := fmt.Sprintf("%s.json", mountDir)
+	Debug("Read json options file: " + jsonOptionsFile)
+	byt, err := ioutil.ReadFile(jsonOptionsFile)
+	if err != nil {
+		Debug("Error reading options json file")
+		Failure(err)
+	}
+	jsonOptions = string(byt)
+	return jsonOptions
 }
 
 func newDriver(jsonOptions string) *Driver {
@@ -105,12 +107,18 @@ func GetServer(client *hcloud.Client) *hcloud.Server {
 
 	// get all interface ips
 	ifaces, err := net.Interfaces()
-	// handle err
+
+	if err != nil {
+		Debug("No interfaces found")
+		return nil
+	}
+
 	for _, i := range ifaces {
 		addrs, err := i.Addrs()
 		if err != nil {
 			return nil
 		}
+
 		// handle err
 		for _, addr := range addrs {
 			var ip net.IP
