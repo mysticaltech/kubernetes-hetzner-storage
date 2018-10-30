@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
@@ -19,19 +20,22 @@ func (d *Driver) Mount(mountDir string) {
 	// TODO: Detach if volume is attached (!! Maybe it's not necessary to detach before attaching?!)
 	volume := GetVolume(d.client, d.options.PVOrVolumeName)
 	server := GetServer(d.client)
-	_, _, errDetach := d.client.Volume.Detach(context.Background(), volume)
+	if !server.Locked {
+		Debug("Detach volume for " + mountDir)
+		_, _, errDetach := d.client.Volume.Detach(context.Background(), volume)
 
-	if errDetach != nil {
-		Debug("Volume was not attached to a server")
+		if errDetach != nil {
+			Debug("Volume was not attached to a server")
+		}
 	}
 
+	Debug("Attach volume for " + mountDir)
 	_, _, errAttach := d.client.Volume.Attach(context.Background(), volume, server)
-
 	if errAttach != nil {
-		Debug(errAttach.Error())
+		Failure(errAttach)
 	}
 
-	// TODO: Retrieve attached volume information
+	time.Sleep(10)
 	err := d.mountAttachedVolume(volume, mountDir)
 
 	if err != nil {
@@ -51,7 +55,7 @@ func (d Driver) mountAttachedVolume(volume *hcloud.Volume, mountDir string) erro
 	// if device is not formatted, format it
 	if blkid == "" {
 		if _, err := RunCommand("mkfs", "-t", defaultFSType, volume.LinuxDevice); err != nil {
-			Failure(err)
+			Debug(err.Error())
 		}
 	}
 
