@@ -1,0 +1,6 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hetzner-cloud-default
+parameters:
+provisioner: stevenklar/hetzner-storage-provisioner
